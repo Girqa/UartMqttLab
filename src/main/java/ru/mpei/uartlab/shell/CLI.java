@@ -39,7 +39,7 @@ public class CLI {
     }
 
     @ShellMethod(value = "Set mqtt topic to listen", key = {"mqtt-topic"})
-    public void setTopicToListen(@ShellOption(value = "topic", defaultValue = "#") String topic) {
+    public void setTopicToListen(@ShellOption(value = "topic", defaultValue = "topic") String topic) {
         mqttClient.subscribeOnTopic(topic);
     }
 }

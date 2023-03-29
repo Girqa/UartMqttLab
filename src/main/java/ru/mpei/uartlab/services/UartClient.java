@@ -14,6 +14,8 @@ public class UartClient {
 
     private SerialPort port;
 
+    private final ByteBuffer buffer = ByteBuffer.wrap(new byte[2]);
+
     public void start(String portName, int boundRate) {
         stop();
 
@@ -27,9 +29,9 @@ public class UartClient {
     public boolean sendCommand(Command command) {
         if (port.isOpen()) {
             try {
-                ByteBuffer buffer = ByteBuffer.wrap(new byte[2]);
                 buffer.putShort(command.value());
                 port.writeBytes(buffer.array(), 1, 1);
+                buffer.clear();
                 return true;
             } catch (Exception e) {
                 log.error("Can't send command. Reason: {}", e.getMessage());

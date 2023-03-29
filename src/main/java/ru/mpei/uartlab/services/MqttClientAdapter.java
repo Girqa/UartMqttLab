@@ -28,8 +28,6 @@ public class MqttClientAdapter {
             MqttConnectOptions options = new MqttConnectOptions();
             options.setServerURIs(new String[]{serverURI});
             options.setCleanSession(true);
-            options.setUserName("Name");
-            options.setPassword("password".toCharArray());
 
             client.connect(options);
 
