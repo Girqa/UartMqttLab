@@ -6,13 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mpei.uartlab.model.Command;
 
-import java.io.*;
+import java.nio.ByteBuffer;
 
 @Slf4j
 @Service
 public class UartClient {
-
-    private PrintWriter writer;
 
     private SerialPort port;
 
@@ -23,16 +21,15 @@ public class UartClient {
         port.setBaudRate(boundRate);
         port.openPort();
 
-        OutputStream outputStream = port.getOutputStream();
-
-        writer = new PrintWriter(new PrintStream(outputStream), true);
         log.info("Successfully started UartClient");
     }
 
     public boolean sendCommand(Command command) {
-        if (writer != null && !writer.checkError() && port.isOpen()) {
+        if (port.isOpen()) {
             try {
-                writer.println(command.value());
+                ByteBuffer buffer = ByteBuffer.wrap(new byte[2]);
+                buffer.putShort(command.value());
+                port.writeBytes(buffer.array(), 1, 1);
                 return true;
             } catch (Exception e) {
                 log.error("Can't send command. Reason: {}", e.getMessage());
@@ -44,7 +41,7 @@ public class UartClient {
     }
 
     public boolean isClientStarted() {
-        return port.isOpen() && writer != null && !writer.checkError();
+        return port.isOpen();
     }
 
     public void stop() {
