@@ -22,7 +22,7 @@ public class CLI {
 
     @ShellMethod(value = "Start Mqtt", key = {"start-mqtt"})
     public void startMqttClient(
-            @ShellOption(value = {"uri"}, defaultValue = "tcp://localhost:1883") String serverURI,
+            @ShellOption(value = {"uri"}, defaultValue = "tcp://srv1.clusterfly.ru:9124") String serverURI,
             @ShellOption(value = {"id"}, defaultValue = "Client") String clientId) {
         mqttClient.start(serverURI, clientId);
     }
@@ -39,7 +39,7 @@ public class CLI {
     }
 
     @ShellMethod(value = "Set mqtt topic to listen", key = {"mqtt-topic"})
-    public void setTopicToListen(@ShellOption(value = "topic", defaultValue = "topic") String topic) {
+    public void setTopicToListen(@ShellOption(value = "topic", defaultValue = "user_401d05a5") String topic) {
         mqttClient.subscribeOnTopic(topic);
     }
 }

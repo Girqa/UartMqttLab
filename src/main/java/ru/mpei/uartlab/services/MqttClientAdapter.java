@@ -7,6 +7,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.stereotype.Service;
+import ru.mpei.uartlab.configuration.BrokerConfig;
 
 @Slf4j
 @Service
@@ -14,9 +15,12 @@ public class MqttClientAdapter {
 
     private MqttClient client;
 
+    private final BrokerConfig brokerConfig;
+
     private final MqttCommandListener commandListener;
 
-    public MqttClientAdapter(MqttCommandListener commandListener) {
+    public MqttClientAdapter(BrokerConfig brokerConfig, MqttCommandListener commandListener) {
+        this.brokerConfig = brokerConfig;
         this.commandListener = commandListener;
     }
 
@@ -28,6 +32,8 @@ public class MqttClientAdapter {
             MqttConnectOptions options = new MqttConnectOptions();
             options.setServerURIs(new String[]{serverURI});
             options.setCleanSession(true);
+            options.setUserName(brokerConfig.getUsername());
+            options.setPassword(brokerConfig.getPassword().toCharArray());
 
             client.connect(options);
 

@@ -5,6 +5,7 @@ import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.mpei.uartlab.model.Command;
+import ru.mpei.uartlab.utils.NumberConverter;
 
 import java.nio.ByteBuffer;
 
@@ -13,8 +14,6 @@ import java.nio.ByteBuffer;
 public class UartClient {
 
     private SerialPort port;
-
-    private final ByteBuffer buffer = ByteBuffer.wrap(new byte[2]);
 
     public void start(String portName, int boundRate) {
         stop();
@@ -29,9 +28,8 @@ public class UartClient {
     public boolean sendCommand(Command command) {
         if (port.isOpen()) {
             try {
-                buffer.putShort(command.value());
-                port.writeBytes(buffer.array(), 1, 1);
-                buffer.clear();
+                byte[] bytes = NumberConverter.shortToByte(command.value());
+                port.writeBytes(bytes, bytes.length);
                 return true;
             } catch (Exception e) {
                 log.error("Can't send command. Reason: {}", e.getMessage());
@@ -40,10 +38,6 @@ public class UartClient {
         }
         log.warn("Sending command is unavailable. Try to start client.");
         return false;
-    }
-
-    public boolean isClientStarted() {
-        return port.isOpen();
     }
 
     public void stop() {
